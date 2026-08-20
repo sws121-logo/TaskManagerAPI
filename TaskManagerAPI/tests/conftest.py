@@ -7,7 +7,6 @@ from src.database import Base, get_db
 from src.security import get_password_hash
 from src.models import User
 
-# In‑memory SQLite for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

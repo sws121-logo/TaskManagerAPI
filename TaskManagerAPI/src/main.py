@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 from src.config import settings
 from src.routers import auth, tasks
 from src.database import engine, Base
-from src.models import User, Task  # ensure models imported for table creation
+from src.models import User, Task
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables (if not exist)
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created")
     yield
@@ -32,7 +31,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -41,7 +39,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global exception handlers
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     logger.warning(f"Validation error: {exc.errors()}")

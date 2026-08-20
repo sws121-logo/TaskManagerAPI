@@ -1,6 +1,3 @@
-import pytest
-from src.models import Task
-
 def test_create_task(authenticated_client):
     response = authenticated_client.post(
         "/api/tasks/",
@@ -10,10 +7,9 @@ def test_create_task(authenticated_client):
     data = response.json()
     assert data["title"] == "Test Task"
     assert data["completed"] is False
-    assert data["owner_id"] == 1  # from fixture user (id=1)
+    assert data["owner_id"] == 1
 
 def test_list_tasks(authenticated_client):
-    # Create 3 tasks
     for i in range(3):
         authenticated_client.post("/api/tasks/", json={"title": f"Task {i}"})
     response = authenticated_client.get("/api/tasks/")
@@ -45,11 +41,9 @@ def test_delete_task(authenticated_client):
     task_id = create_resp.json()["id"]
     delete_resp = authenticated_client.delete(f"/api/tasks/{task_id}")
     assert delete_resp.status_code == 204
-    # Verify not found
     get_resp = authenticated_client.get(f"/api/tasks/{task_id}")
     assert get_resp.status_code == 404
 
 def test_unauthorized_access(client):
-    # No token
     response = client.get("/api/tasks/")
     assert response.status_code == 401

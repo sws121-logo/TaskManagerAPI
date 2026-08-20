@@ -1,5 +1,4 @@
 import pytest
-from src.main import app
 
 def test_register_success(client):
     response = client.post(
